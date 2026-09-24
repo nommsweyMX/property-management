@@ -1,0 +1,486 @@
+{
+  "version": 1,
+  "verifiedDate": "2026-09-24",
+  "kind": "portable-structure-snapshot",
+  "notes": [
+    "Names and types checked using the connected Airtable base.",
+    "No credentials, record data, addresses, photos, or live IDs are included.",
+    "Automatic inverse-link fields and the original Table 1 are intentionally omitted.",
+    "This is documentation, NOT a directly executable create-base payload.",
+    "Only Tickets select choices were freshly read during this export; other field options require discovery before recreating the schema."
+  ],
+  "tables": [
+    {
+      "name": "Properties",
+      "primaryField": "Property Name",
+      "fields": [
+        {
+          "name": "Property Name",
+          "type": "singleLineText"
+        },
+        {
+          "name": "Property Code",
+          "type": "singleLineText"
+        },
+        {
+          "name": "Country",
+          "type": "singleLineText"
+        },
+        {
+          "name": "State / Province",
+          "type": "singleLineText"
+        },
+        {
+          "name": "City",
+          "type": "singleLineText"
+        },
+        {
+          "name": "Neighborhood",
+          "type": "singleLineText"
+        },
+        {
+          "name": "Street Address",
+          "type": "singleLineText"
+        },
+        {
+          "name": "Postal Code",
+          "type": "singleLineText"
+        },
+        {
+          "name": "Full Address",
+          "type": "multilineText"
+        },
+        {
+          "name": "Default Language",
+          "type": "singleSelect"
+        },
+        {
+          "name": "Default Currency",
+          "type": "singleSelect"
+        },
+        {
+          "name": "Time Zone",
+          "type": "singleLineText"
+        },
+        {
+          "name": "Primary Color",
+          "type": "singleLineText"
+        },
+        {
+          "name": "Secondary Color",
+          "type": "singleLineText"
+        },
+        {
+          "name": "Accent Color",
+          "type": "singleLineText"
+        },
+        {
+          "name": "Cover / Photos",
+          "type": "multipleAttachments"
+        },
+        {
+          "name": "Notes / Notas",
+          "type": "multilineText"
+        }
+      ]
+    },
+    {
+      "name": "Contractors",
+      "primaryField": "Name / Company",
+      "fields": [
+        {
+          "name": "Name / Company",
+          "type": "singleLineText"
+        },
+        {
+          "name": "Contact Name",
+          "type": "singleLineText"
+        },
+        {
+          "name": "Specialties / Especialidades",
+          "type": "multipleSelects"
+        },
+        {
+          "name": "Phone / WhatsApp",
+          "type": "phoneNumber"
+        },
+        {
+          "name": "Email",
+          "type": "email"
+        },
+        {
+          "name": "Preferred Language",
+          "type": "singleSelect"
+        },
+        {
+          "name": "Rating",
+          "type": "rating"
+        },
+        {
+          "name": "Notes / Notas",
+          "type": "multilineText"
+        }
+      ]
+    },
+    {
+      "name": "Areas",
+      "primaryField": "Area Name / Área",
+      "fields": [
+        {
+          "name": "Area Name / Área",
+          "type": "singleLineText"
+        },
+        {
+          "name": "Property",
+          "type": "multipleRecordLinks",
+          "linkedTable": "Properties"
+        },
+        {
+          "name": "Parent Area",
+          "type": "singleLineText"
+        },
+        {
+          "name": "Level / Piso",
+          "type": "singleLineText"
+        },
+        {
+          "name": "Area Type",
+          "type": "singleSelect"
+        },
+        {
+          "name": "Photos",
+          "type": "multipleAttachments"
+        },
+        {
+          "name": "Notes / Notas",
+          "type": "multilineText"
+        }
+      ]
+    },
+    {
+      "name": "Projects",
+      "primaryField": "Project / Proyecto",
+      "fields": [
+        {
+          "name": "Project / Proyecto",
+          "type": "singleLineText"
+        },
+        {
+          "name": "Property",
+          "type": "multipleRecordLinks",
+          "linkedTable": "Properties"
+        },
+        {
+          "name": "Status",
+          "type": "singleSelect"
+        },
+        {
+          "name": "Priority",
+          "type": "singleSelect"
+        },
+        {
+          "name": "Description / Descripción",
+          "type": "multilineText"
+        },
+        {
+          "name": "Target Date",
+          "type": "date"
+        },
+        {
+          "name": "Estimated Cost",
+          "type": "currency"
+        },
+        {
+          "name": "Actual Cost",
+          "type": "currency"
+        },
+        {
+          "name": "Currency",
+          "type": "singleSelect"
+        },
+        {
+          "name": "Contractors",
+          "type": "multipleRecordLinks",
+          "linkedTable": "Contractors"
+        },
+        {
+          "name": "Photos / Documents",
+          "type": "multipleAttachments"
+        },
+        {
+          "name": "Notes / Notas",
+          "type": "multilineText"
+        }
+      ]
+    },
+    {
+      "name": "Systems & Assets",
+      "primaryField": "Asset / System",
+      "fields": [
+        {
+          "name": "Asset / System",
+          "type": "singleLineText"
+        },
+        {
+          "name": "Property",
+          "type": "multipleRecordLinks",
+          "linkedTable": "Properties"
+        },
+        {
+          "name": "Area",
+          "type": "multipleRecordLinks",
+          "linkedTable": "Areas"
+        },
+        {
+          "name": "Category",
+          "type": "singleSelect"
+        },
+        {
+          "name": "Manufacturer",
+          "type": "singleLineText"
+        },
+        {
+          "name": "Model",
+          "type": "singleLineText"
+        },
+        {
+          "name": "Serial Number",
+          "type": "singleLineText"
+        },
+        {
+          "name": "Condition",
+          "type": "singleSelect"
+        },
+        {
+          "name": "Install Date",
+          "type": "date"
+        },
+        {
+          "name": "Warranty Until",
+          "type": "date"
+        },
+        {
+          "name": "Photos / Documents",
+          "type": "multipleAttachments"
+        },
+        {
+          "name": "Notes / Notas",
+          "type": "multilineText"
+        }
+      ]
+    },
+    {
+      "name": "Maintenance",
+      "primaryField": "Task / Tarea",
+      "fields": [
+        {
+          "name": "Task / Tarea",
+          "type": "singleLineText"
+        },
+        {
+          "name": "Property",
+          "type": "multipleRecordLinks",
+          "linkedTable": "Properties"
+        },
+        {
+          "name": "Area",
+          "type": "multipleRecordLinks",
+          "linkedTable": "Areas"
+        },
+        {
+          "name": "Asset / System",
+          "type": "multipleRecordLinks",
+          "linkedTable": "Systems & Assets"
+        },
+        {
+          "name": "Frequency / Frecuencia",
+          "type": "singleSelect"
+        },
+        {
+          "name": "Last Completed",
+          "type": "date"
+        },
+        {
+          "name": "Next Due",
+          "type": "date"
+        },
+        {
+          "name": "Status",
+          "type": "singleSelect"
+        },
+        {
+          "name": "Contractor",
+          "type": "multipleRecordLinks",
+          "linkedTable": "Contractors"
+        },
+        {
+          "name": "Instructions / Instrucciones",
+          "type": "multilineText"
+        },
+        {
+          "name": "Estimated Cost",
+          "type": "currency"
+        },
+        {
+          "name": "Currency",
+          "type": "singleSelect"
+        },
+        {
+          "name": "Notes / Notas",
+          "type": "multilineText"
+        }
+      ]
+    },
+    {
+      "name": "Work Log",
+      "primaryField": "Work Entry / Registro",
+      "fields": [
+        {
+          "name": "Work Entry / Registro",
+          "type": "singleLineText"
+        },
+        {
+          "name": "Property",
+          "type": "multipleRecordLinks",
+          "linkedTable": "Properties"
+        },
+        {
+          "name": "Area",
+          "type": "multipleRecordLinks",
+          "linkedTable": "Areas"
+        },
+        {
+          "name": "Asset / System",
+          "type": "multipleRecordLinks",
+          "linkedTable": "Systems & Assets"
+        },
+        {
+          "name": "Project",
+          "type": "multipleRecordLinks",
+          "linkedTable": "Projects"
+        },
+        {
+          "name": "Contractor",
+          "type": "multipleRecordLinks",
+          "linkedTable": "Contractors"
+        },
+        {
+          "name": "Date",
+          "type": "date"
+        },
+        {
+          "name": "Work Performed / Trabajo",
+          "type": "multilineText"
+        },
+        {
+          "name": "Cost",
+          "type": "currency"
+        },
+        {
+          "name": "Currency",
+          "type": "singleSelect"
+        },
+        {
+          "name": "Photos / Documents",
+          "type": "multipleAttachments"
+        },
+        {
+          "name": "Notes / Notas",
+          "type": "multilineText"
+        }
+      ]
+    },
+    {
+      "name": "Tickets",
+      "primaryField": "Ticket",
+      "fields": [
+        {
+          "name": "Ticket",
+          "type": "singleLineText"
+        },
+        {
+          "name": "Property",
+          "type": "multipleRecordLinks",
+          "linkedTable": "Properties"
+        },
+        {
+          "name": "Area",
+          "type": "multipleRecordLinks",
+          "linkedTable": "Areas"
+        },
+        {
+          "name": "Asset / System",
+          "type": "multipleRecordLinks",
+          "linkedTable": "Systems & Assets"
+        },
+        {
+          "name": "Status",
+          "type": "singleSelect",
+          "choices": [
+            "New / Nuevo",
+            "Triage / Revisión",
+            "Scheduled / Programado",
+            "In Progress / En proceso",
+            "Waiting / En espera",
+            "Complete / Terminado",
+            "Verified / Verificado",
+            "Closed / Cerrado"
+          ]
+        },
+        {
+          "name": "Priority",
+          "type": "singleSelect",
+          "choices": [
+            "Emergency / Emergencia",
+            "Urgent / Urgente",
+            "Normal",
+            "Low / Baja",
+            "Improvement / Mejora"
+          ]
+        },
+        {
+          "name": "Description / Descripción",
+          "type": "multilineText"
+        },
+        {
+          "name": "Photos",
+          "type": "multipleAttachments"
+        },
+        {
+          "name": "Reported Date",
+          "type": "date"
+        },
+        {
+          "name": "Target Date",
+          "type": "date"
+        },
+        {
+          "name": "Contractor",
+          "type": "multipleRecordLinks",
+          "linkedTable": "Contractors"
+        },
+        {
+          "name": "Project",
+          "type": "multipleRecordLinks",
+          "linkedTable": "Projects"
+        },
+        {
+          "name": "Cost",
+          "type": "currency"
+        },
+        {
+          "name": "Currency",
+          "type": "singleSelect"
+        },
+        {
+          "name": "Resolution / Resolución",
+          "type": "multilineText"
+        },
+        {
+          "name": "Documents / Receipts",
+          "type": "multipleAttachments"
+        }
+      ]
+    }
+  ]
+}
