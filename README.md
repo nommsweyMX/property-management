@@ -1,68 +1,49 @@
-# Casa HQ / Hogar — Property Management
+# Casa HQ — Property Management
 
-A mobile-first, bilingual home-maintenance application for a small portfolio.
-
-**Version 0.1 is a functional local prototype, not a deployed/shared production system.** The interface labels this clearly. No GitHub push succeeded in the build session that produced this package.
-
-## Run
-
-Requires Node.js 22 or newer. Runtime dependencies: none.
-
-```sh
-npm start
-```
-
-Open `http://127.0.0.1:3000`.
-
-```sh
-npm run check
-npm test
-```
-
-No npm installation or paid subscription is needed to run this local prototype. The executable server uses only Node's standard library.
+A phone-first, English / Mexican Spanish maintenance app for a small household property portfolio. Preserve the existing green/terracotta interface; the live backend is added without replacing the local demonstration.
 
 ## Implemented
 
-- Responsive phone-first navigation with English and Mexican Spanish.
-- Property switching and a local form to add up to four properties with address metadata and a theme color.
-- Photo intake, ticket creation, status updates, search/filtering and work notes.
-- IndexedDB local storage implementation; explicit local-only save labels.
-- Work-order sharing/copying with property name and full address.
-- Local JSON backup export.
-- PWA manifest, icons and a static-only service worker.
-- Server-only Airtable adapter with pagination, request pacing, strict field mapping, property allowlist checks and cross-property area/asset validation.
-- A data-free snapshot of the live Airtable table structure.
+- Google Identity Services sign-in, Google ID-token verification, opaque HttpOnly sessions and CSRF protection.
+- Server-side Airtable reads/writes with property-scoped access checked on every request.
+- Photo-first tickets, status changes with stale-write detection, and linked work notes.
+- Owner, Manager, Reporter and Viewer roles; owner-managed account allowlist and revocation.
+- Gmail notices for website-created reports, status updates and notes. Messages use the address in Airtable, not a browser-supplied destination.
+- Persistent email outbox; an ambiguous delivery is marked **unknown**, not repeatedly sent.
+- Explicit offline/local demonstration mode. Live mode never silently falls back to local records.
 
-The public sample omits the street address and starts with no tickets. The one maintenance item is explicitly an example, not a recommended schedule. Newly added properties initially have empty area/equipment lists.
+**Implemented does not mean deployed.** Google sign-in, Airtable sync and email require this website's own host-side configuration. ChatGPT connections cannot supply those credentials to a running site. See [activation requirements](docs/ENABLEMENT.md) and [test/deployment status](docs/STATUS.md).
 
-## Not yet implemented or verified live
+## Run
 
-Google sign-in, contractor roles, shared multi-user state, notification delivery, live photo uploads, automatic recurring scheduling, production ticket numbering, deployment, and wiring the browser to authenticated Airtable endpoints. Project/maintenance/contractor pages currently show local records or empty states; their editing workflows are future work.
+Requires Node 22+ and outbound internet access on the deployment host.
 
-The public server intentionally exposes **no live Airtable API route**. The adapter is a tested integration component, not a claim that live sync works. `GET /api/*` returns an explicit unavailable response rather than pretending to save.
+```sh
+npm install
+cp .env.example .env
+# Configure .env privately; never put credentials in chat or the public repository.
+npm run doctor
+npm start
+```
+
+For the local demonstration only:
+
+```sh
+APP_MODE=demo npm start
+```
+
+Run validation with `npm run check` and `npm test`. Browser smoke tests require Python Playwright and Chromium. `tests/live-ui-offline.py` explicitly mocks external services and browser persistence; `tests/live-ui.py` is a separate local HTTP browser integration test, not a production-provider test.
+
+## Deploy
+
+Use a single Node process / one replica behind HTTPS, or the supplied Dockerfile/Compose definition behind an HTTPS reverse proxy. Persist `DATA_DIR`. In-memory sessions are invalidated on restart. Multiple replicas require a shared session/lock/outbox implementation before use. Static-only GitHub Pages hosting cannot execute this backend.
+
+No host was specified for this build and no deployment, paid service, or subscription upgrade was performed. The Docker image has not been built in this offline environment. Dependency installation and a lockfile must be completed on an internet-connected host.
 
 ## Data and privacy
 
-Only `public/` is served. `.env` and `server/` are never public. This repository must not contain personal addresses, contractor contacts, live records, photographs or credentials. Never upload a local backup to the public repo.
+Property is the top-level object. Geography is metadata, not five linked tables. Areas and assets are optional for a report. Airtable tables are Properties, Areas, Systems & Assets, Tickets, Projects, Maintenance, Contractors, Work Log, plus the **App Access** allowlist.
 
-Local browser records are not backed up automatically and are not encrypted by this application. Browser eviction or clearing storage can remove them. This initial build does not synchronize concurrent browser tabs or devices, and backup import is not implemented. Treat it as a usability prototype until authenticated live storage and backup recovery are completed.
+Never commit home addresses, actual contacts, private photos, live exports, OAuth tokens or Airtable personal access tokens. Code reads private records only after server authorization. Browser caches contain the static app shell, never authenticated API responses or live household state. Downloaded exports are private and require appropriate handling.
 
-## Repository layout
-
-- `public/`: frontend, locales, data rules, IndexedDB store, manifest and service worker.
-- `server.mjs`: static development/prototype host.
-- `server/airtable.mjs`: server-only integration component; not exposed publicly.
-- `airtable/schema.snapshot.json`: portable structure snapshot; not an executable migration.
-- `tests/`: Node tests and an optional offline-rendered UI smoke test.
-- `docs/`: implementation status, handoff and backlog.
-- `AGENTS.md`: project-owner preferences and implementation rules.
-
-## Hosting
-
-The static prototype can be served from `public/`. A real multi-user deployment requires an authenticated server or serverless API before Airtable access is enabled. PWA installation depends on browser support and serving over HTTPS or a supported local development origin; adding a manifest alone is not proof of installation.
-
-References: [MDN PWA installability](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Guides/Making_PWAs_installable), [Airtable Web API](https://support.airtable.com/docs/getting-started-with-airtables-web-api).
-
-## Collaboration
-
-Target: `nommsweyMX/property-management`. This package is on a local feature branch. Inspect the current remote before integrating it; do not force-push over another contributor's initialization. See `docs/HANDOFF.md`.
+No contractor-only restricted portal is claimed. Reporter and Viewer users can see all operational tickets/history within their assigned properties. Assign those roles only to people authorized for that scope.

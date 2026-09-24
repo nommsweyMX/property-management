@@ -1,6 +1,6 @@
 // Only static application files are cached. Never cache future authenticated API responses.
-const CACHE = 'casa-hq-shell-v1';
-const FILES = ['./','./index.html','./styles.css','./app.mjs','./domain.mjs','./locales.mjs','./store.mjs','./manifest.webmanifest','./icons/icon-192.png','./icons/icon-512.png'];
+const CACHE = 'casa-hq-shell-v2';
+const FILES = ['./','./index.html','./styles.css','./app.mjs','./live.mjs','./domain.mjs','./locales.mjs','./store.mjs','./manifest.webmanifest','./icons/icon-192.png','./icons/icon-512.png'];
 const ALLOWED = new Set(FILES.map(path => new URL(path, self.registration.scope).href));
 self.addEventListener('install', event => event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(FILES))));
 self.addEventListener('activate', event => event.waitUntil(Promise.all([

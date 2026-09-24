@@ -1,19 +1,30 @@
-# Implementation status — 2026-09-24
+# Implementation status — 2026-09-24, live-integration build
 
-## Verified connected state
+## Actual connected changes
 
-The Airtable Property Management base was readable. Its eight application tables are Properties, Contractors, Areas, Projects, Systems & Assets, Maintenance, Work Log and Tickets. The original Table 1 remains separate and untouched. Current field names/types were read from the connector; Tickets statuses, priorities and relationship targets were rechecked.
+The existing Airtable base was read before modification. Added Tickets `Ticket Sequence`, valid `Ticket ID` formula, and `Property Address` lookup. Added a `Ticket` relation to Work Log and an empty `App Access` table for explicit account authorization. No house records, contractor records or user-uploaded images were overwritten. The user-managed image table was left unchanged.
 
-GitHub metadata was readable, and the contents endpoint returned that the repository was empty. An actual `create_file` request for README.md returned HTTP 403, `Resource not accessible by integration`. The installation lookup returned an empty list. These observations establish that this connection's write failed; they do **not** establish which exact app registration, permission, approval or credential setting caused it. No remote commit is claimed.
+Published **Casa HQ / Hogar** with Properties / Casas and Tickets / Reportes. Read-back confirmed both pages are now published, with no remaining draft pages. Publishing did not add collaborators or make anonymous access public. The website is distinct from this Airtable interface.
 
-## Created locally
+The GitHub contents read again reported an empty repository. A fresh `create_file` attempt for a non-sensitive README returned **403 Resource not accessible by integration**. This proves only that the write failed from this connection, not which configuration caused it. No remote push or deployment is claimed.
 
-Runnable frontend, local static server, server-only Airtable integration module, portable schema snapshot, project instructions, tests and handoff documentation. No live household data or credentials were copied into the public source package.
+## Code implemented
 
-## Test scope
+The existing interface now selects explicit demo mode or a fail-closed live mode. Live mode uses Google sign-in, opaque server sessions, CSRF/origin checks, property-specific Airtable reads/writes, protected photo uploads, stale-status-change detection, linked work history and owner-managed access grants/revocation. Users without a matching active allowlist record cannot sign in. No actual additional people were granted access.
 
-- 27 passing Node tests: translations, domain logic, input validation, property checks, Airtable mapping/pagination/error handling and static server isolation.
-- Offline UI smoke test: English/Spanish layout, ticket creation, status changes, work notes, language-preserved input, search, adding/switching properties, mobile/desktop layout. Storage and UUID generation were mocked.
-- Syntax checks passed.
+Optional automatic Gmail notices use a persistent private outbox and revalidate each recipient before sending. Unknown outcomes are not retried automatically. Nothing was emailed in this build. Direct Airtable edits, calendar scheduling, Drive sync and push/SMS/WhatsApp automation are not activated by this implementation.
 
-Browser navigation was restricted in the build environment, so the UI was rendered entirely in memory. IndexedDB persistence, service-worker fetch behavior, installability on an actual phone, Google login, live Airtable writes and deployment have **not** been end-to-end tested.
+## Tests executed
+
+- **52 Node tests passed**, including real local HTTP requests with mocked Google/Airtable/mail, authentication failure paths, nonce/CSRF/origin checks, role/property isolation, revocation, stale writes, linked notes, safe email formatting, outbox recovery and unconfirmed delivery.
+- **10 existing local-demo browser smoke checks passed**, with browser storage and UUIDs mocked.
+- **11 live-mode browser UI smoke checks passed**, rendered in memory with Google/API/storage mocked; includes POST/PATCH forms, Spanish UI, account grants/revocation, viewer controls and logout.
+- JavaScript syntax checks passed.
+
+The separate `tests/live-ui.py` attempt to navigate Chromium to the local server was blocked by this environment's administrator (`ERR_BLOCKED_BY_ADMINISTRATOR`). It did not pass. The in-memory smoke test is not represented as equivalent to a full browser HTTP integration test.
+
+No production Google token exchange, live website-to-Airtable write/photo upload, Gmail delivery, HTTPS deployment, actual phone installation or Docker build has been verified. The Google verification dependency could not be downloaded in this environment; install/review dependencies and generate a lockfile on the connected deployment host.
+
+## Remaining activation inputs
+
+No hosting provider/domain or Google Cloud web-client configuration is known. The runtime has no AIRTABLE_TOKEN, GOOGLE_CLIENT_ID, OWNER_EMAILS, or Gmail sending credentials. These are host-side application settings, not ChatGPT connector toggles. See ENABLEMENT.md. No paid service or subscription change was made.

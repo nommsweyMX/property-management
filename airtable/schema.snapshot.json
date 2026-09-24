@@ -1,13 +1,14 @@
 {
-  "version": 1,
+  "version": 2,
   "verifiedDate": "2026-09-24",
   "kind": "portable-structure-snapshot",
   "notes": [
     "Names and types checked using the connected Airtable base.",
     "No credentials, record data, addresses, photos, or live IDs are included.",
-    "Automatic inverse-link fields and the original Table 1 are intentionally omitted.",
+    "Automatic inverse-link fields and the user-managed image table are intentionally omitted.",
     "This is documentation, NOT a directly executable create-base payload.",
-    "Only Tickets select choices were freshly read during this export; other field options require discovery before recreating the schema."
+    "Only Tickets select choices were freshly read during this export; other field options require discovery before recreating the schema.",
+    "Ticket Sequence, Ticket ID, Property Address, Work Log Ticket link, and App Access were created successfully through the connector on the verified date. No access records were added."
   ],
   "tables": [
     {
@@ -387,6 +388,11 @@
         {
           "name": "Notes / Notas",
           "type": "multilineText"
+        },
+        {
+          "name": "Ticket",
+          "type": "multipleRecordLinks",
+          "linkedTable": "Tickets"
         }
       ]
     },
@@ -479,6 +485,66 @@
         {
           "name": "Documents / Receipts",
           "type": "multipleAttachments"
+        },
+        {
+          "name": "Ticket Sequence",
+          "type": "autoNumber"
+        },
+        {
+          "name": "Ticket ID",
+          "type": "formula",
+          "formula": "\"ISS-\" & RIGHT(\"000000\" & {Ticket Sequence}, 6)"
+        },
+        {
+          "name": "Property Address",
+          "type": "multipleLookupValues",
+          "recordLinkField": "Property",
+          "fieldInLinkedTable": "Full Address"
+        }
+      ]
+    },
+    {
+      "name": "App Access",
+      "primaryField": "Email",
+      "fields": [
+        {
+          "name": "Email",
+          "type": "email"
+        },
+        {
+          "name": "Google Subject",
+          "type": "singleLineText"
+        },
+        {
+          "name": "Role",
+          "type": "singleSelect",
+          "choices": [
+            "Owner",
+            "Manager",
+            "Reporter",
+            "Viewer"
+          ]
+        },
+        {
+          "name": "Properties",
+          "type": "multipleRecordLinks",
+          "linkedTable": "Properties"
+        },
+        {
+          "name": "Active",
+          "type": "checkbox"
+        },
+        {
+          "name": "Receive Notices",
+          "type": "checkbox"
+        },
+        {
+          "name": "Language",
+          "type": "singleSelect",
+          "choices": [
+            "en",
+            "es"
+          ]
         }
       ]
     }

@@ -8,3 +8,8 @@ backups/
 coverage/
 test-results/
 .DS_Store
+.data/
+*.bundle
+*.zip
+*.log
+__pycache__/

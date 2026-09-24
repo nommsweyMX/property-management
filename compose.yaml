@@ -1,0 +1,21 @@
+services:
+  casa:
+    build: .
+    restart: unless-stopped
+    init: true
+    env_file: .env
+    environment:
+      HOST: 0.0.0.0
+      DATA_DIR: /app/.data
+    ports:
+      - "127.0.0.1:3000:3000"
+    volumes:
+      - private-notices:/app/.data
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+volumes:
+  private-notices:

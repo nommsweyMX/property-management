@@ -1,29 +1,38 @@
-# Handoff to the repo/build session
+# Handoff — Casa HQ live-integration build
 
 Target repository: `nommsweyMX/property-management`.
-Local branch: `work/casa-hq-foundation`.
+Local branch: `work/casa-hq-live-integration` (based on the original foundation).
 
-This package contains source and a local Git commit, not a successful remote push. The GitHub connector rejected an actual README creation request with 403. Do not infer that the owner must change a specific setting merely from that message.
+## Import without losing concurrent work
 
-## Continue
+Read the current remote first. Another session may have initialized it since the last connector check. The latest attempted README write here failed with 403; no remote commit is claimed.
 
-Read the current remote first; another session may have initialized it after this package was produced. Preserve any existing work. If the repository is still empty, publish this local feature branch and initialize the default branch intentionally. If it has commits, create an integration branch from the current default and apply the package's files or cherry-pick its commit, resolving collisions explicitly. Do not force-push.
-
-The bundle contains the complete local branch history:
+The supplied Git bundle contains both the foundation commit and this integration branch:
 
 ```sh
-git fetch /path/to/property-management-foundation.bundle work/casa-hq-foundation:incoming/casa-hq-foundation
+git fetch /path/to/property-management-live-integration.bundle \
+  work/casa-hq-live-integration:incoming/casa-hq-live-integration
 ```
 
-Inspect `incoming/casa-hq-foundation` before merging/cherry-picking. Run `npm run check` and `npm test`. The bundle is portable and does not contain tokens or live household records.
+Inspect before merging. For an initialized repository, branch from its current default branch and cherry-pick/apply the changes with explicit conflict handling; never force-push. The application is independent source, not an Airtable export of household records. The ZIP includes the full current source, not node_modules, credentials, outbox messages or private backups.
 
-## Known state
+## Added implementation
 
-- Airtable tables were created earlier and their structure was freshly read for the snapshot. The frontend is not live-connected to them yet.
-- The frontend uses local IndexedDB and labels that explicitly.
-- `server/airtable.mjs` is an integration module only. It requires authentication/authorization at its future HTTP boundary.
-- Do not enable real data endpoints without Google identity verification and a server-derived allowlist.
-- The house address and other private setup values should be read from authorized Airtable records, not copied from conversation text into public source.
-- `AGENTS.md` records the owner's high-effort preference and working-code-first rule.
+- server/config.mjs: private deployment configuration and non-secret public readiness.
+- server/auth.mjs: Google verification, nonce binding, opaque sessions and CSRF.
+- server/access.mjs: App Access allowlist, per-property roles and revocation.
+- server/records.mjs: authorized state projection, without exposing all raw fields.
+- server/api.mjs: live endpoints and per-record serialized status changes.
+- server/notices.mjs: Gmail sending and persistent private outbox.
+- public/live.mjs plus existing app edits: sign-in, shared forms, grants and logout.
+- Docker/Compose, deployment guide, migration documentation and additional tests.
 
-No message was sent to another chat. This handoff file is the coordination mechanism; the other session needs access to this package or its eventual remote commit.
+The original approved visual design is preserved. Demo mode remains explicit; live API failures are not converted into local saves. Real record IDs and private addresses are read only after authorization.
+
+## Before claiming activation
+
+`npm install`, `npm run doctor`, `npm run check`, `npm test`. Deploy a **single instance** behind HTTPS, persist DATA_DIR, configure the private website credentials described in ENABLEMENT.md, and test real sign-in, a scoped ticket/photo, a second user's access and one owner notice. Never mark those integrations live just because the code or ChatGPT connector exists.
+
+The actual Airtable schema additions and published pages are recorded in STATUS.md. App Access is currently empty; the intended owner bootstraps only after a real verified login matching privately configured OWNER_EMAILS. No invitations were sent, no subscriptions changed, and no website hosting was provisioned.
+
+No message was sent to a separate chat. This file and the repository/package are the coordination mechanism.

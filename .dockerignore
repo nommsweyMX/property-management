@@ -1,0 +1,13 @@
+.git
+.env
+.env.*
+node_modules
+.data
+private
+backups
+coverage
+test-results
+tests
+*.bundle
+*.zip
+*.log

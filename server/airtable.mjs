@@ -1,11 +1,11 @@
-/** Server-only Airtable adapter. Deliberately NOT wired to public HTTP routes yet.
+/** Server-only Airtable adapter, used only behind the authenticated API.
  * Callers must supply a server-derived property allowlist after authenticating a user.
  * Never import into browser code. Never retry writes automatically: an ambiguous
  * timeout may have succeeded and retrying could create a duplicate ticket.
  */
 import {AIRTABLE_PRIORITY, dateOnly} from '../public/domain.mjs';
 const recordId = value => typeof value==='string' && /^rec[A-Za-z0-9]{14}$/.test(value);
-const TABLES=new Set(['Properties','Areas','Systems & Assets','Tickets','Projects','Maintenance','Contractors','Work Log']);
+const TABLES=new Set(['Properties','Areas','Systems & Assets','Tickets','Projects','Maintenance','Contractors','Work Log','App Access']);
 export function createAirtableClient({token,baseId,fetchImpl=globalThis.fetch,delay=250}={}){
   if(!token||!/^app[A-Za-z0-9]{14}$/.test(baseId??''))throw new Error('Server Airtable configuration is missing or invalid');
   let queue=Promise.resolve(),last=0;
@@ -48,5 +48,27 @@ export function createAirtableClient({token,baseId,fetchImpl=globalThis.fetch,de
     const response=await perform('Tickets',{method:'POST',body:{records:[{fields}],typecast:false}});
     return response.records[0];
   }
-  return Object.freeze({list,createTicket});
+
+  async function get(table,id){return perform(table,{record:id});}
+  async function create(table,fields){const data=await perform(table,{method:'POST',body:{records:[{fields}],typecast:false}});return data.records[0];}
+  async function update(table,id,fields){return perform(table,{method:'PATCH',record:id,body:{fields,typecast:false}});}
+  async function uploadPhoto(id,photo){
+    if(!recordId(id))throw new Error('Invalid record ID');
+    const match=/^data:(image\/(?:jpeg|png|webp));base64,([A-Za-z0-9+/=]+)$/.exec(photo.data||'');
+    if(!match||Buffer.byteLength(match[2],'base64')>3*1024*1024)throw new Error('Invalid photo');
+    const data=Buffer.from(match[2],'base64');
+    const valid=match[1]==='image/jpeg'?data[0]===255&&data[1]===216&&data[2]===255:
+      match[1]==='image/png'?data.subarray(0,8).equals(Buffer.from([137,80,78,71,13,10,26,10])):
+      data.subarray(0,4).toString()==='RIFF'&&data.subarray(8,12).toString()==='WEBP';
+    if(!valid)throw new Error('Image content does not match type');
+    const task=queue.then(async()=>{
+      const wait=Math.max(0,last+delay-Date.now());if(wait)await new Promise(r=>setTimeout(r,wait));last=Date.now();
+      const url=`https://content.airtable.com/v0/${baseId}/${id}/Photos/uploadAttachment`;
+      let response;try {response=await fetchImpl(url,{method:'POST',headers:{Authorization:`Bearer ${token}`,'Content-Type':'application/json'},
+        body:JSON.stringify({contentType:match[1],filename:String(photo.name||'photo').replace(/[^a-zA-Z0-9._-]/g,'_').slice(0,120),file:match[2]}),signal:AbortSignal.timeout(20000),redirect:'error'});}
+      catch {throw new Error('Photo upload outcome unknown; check before retrying');}
+      if(!response.ok)throw new Error(`Photo upload HTTP ${response.status}`);return response.json();
+    });queue=task.catch(()=>{});return task;
+  }
+  return Object.freeze({list,createTicket,get,create,update,uploadPhoto});
 }

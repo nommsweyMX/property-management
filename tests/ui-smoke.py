@@ -16,7 +16,8 @@ source='\n'.join((public/name).read_text() for name in ['domain.mjs','locales.mj
 source=re.sub(r'^import .*?;\n','',source,flags=re.M)
 source=re.sub(r'^export ','',source,flags=re.M)
 source=source.replace('async function load() {','async function unusedLoad() {').replace('async function save(state) {','async function unusedSave(state) {')
-source='''let mockState; async function load(){return mockState??null;} async function save(value){mockState=structuredClone(value);}
+source='''async function request(path){if(path==='config')return {mode:'demo',ready:false};throw new Error('Unexpected live call');}function clearSession(){} async function signOut(){} async function signInButton(){}
+let mockState; async function load(){return mockState??null;} async function save(value){mockState=structuredClone(value);}
 let uuidCounter=0; Object.defineProperty(crypto,'randomUUID',{value:()=>`${String(++uuidCounter).padStart(8,'0')}-0000-4000-8000-000000000000`});
 '''+source
 with sync_playwright() as pw:
