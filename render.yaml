@@ -1,0 +1,33 @@
+# First deployment: free preview, no automatic email, no paid database/disk.
+# Put the application files at the repository root before creating this Blueprint.
+services:
+  - type: web
+    name: casa-hq
+    runtime: node
+    repo: https://github.com/nommsweyMX/property-management
+    branch: main
+    region: oregon
+    plan: free
+    autoDeployTrigger: "off"
+    buildCommand: bash scripts/render-build.sh
+    startCommand: npm start
+    healthCheckPath: /healthz
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: NODE_ENV
+        value: production
+      - key: HOST
+        value: 0.0.0.0
+      - key: APP_MODE
+        value: live
+      - key: NOTIFICATIONS_ENABLED
+        value: "false"
+      - key: AIRTABLE_BASE_ID
+        sync: false
+      - key: AIRTABLE_TOKEN
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: OWNER_EMAILS
+        sync: false

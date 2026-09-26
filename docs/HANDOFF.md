@@ -1,3 +1,7 @@
+# Current handoff
+
+Use this revision, including `render.yaml`, not the older ZIP. Hosting is Render; the source remote is still `nommsweyMX/property-management`. Read [RENDER.md](RENDER.md) before deployment or requesting credentials. The code has not been pushed.
+
 # Handoff — Casa HQ live-integration build
 
 Target repository: `nommsweyMX/property-management`.

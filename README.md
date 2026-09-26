@@ -16,7 +16,7 @@ A phone-first, English / Mexican Spanish maintenance app for a small household p
 
 ## Run
 
-Requires Node 22+ and outbound internet access on the deployment host.
+Requires Node 22.16 or newer within the Node 22 major release, and outbound internet access on the deployment host.
 
 ```sh
 npm install
@@ -38,7 +38,7 @@ Run validation with `npm run check` and `npm test`. Browser smoke tests require 
 
 Use a single Node process / one replica behind HTTPS, or the supplied Dockerfile/Compose definition behind an HTTPS reverse proxy. Persist `DATA_DIR`. In-memory sessions are invalidated on restart. Multiple replicas require a shared session/lock/outbox implementation before use. Static-only GitHub Pages hosting cannot execute this backend.
 
-No host was specified for this build and no deployment, paid service, or subscription upgrade was performed. The Docker image has not been built in this offline environment. Dependency installation and a lockfile must be completed on an internet-connected host.
+Render is the selected host. The deployment configuration is in `render.yaml`; see [Render deployment instructions and actual attempt results](docs/RENDER.md). The attempted service creation failed because the remote `main` branch does not exist. No deployment, paid service, or subscription upgrade has been performed. The Docker image has not been built here. Dependency installation and a reviewed lockfile must be completed on an internet-connected host.
 
 ## Data and privacy
 

@@ -1,3 +1,5 @@
+> Hosting update: Render is selected. Read [RENDER.md](RENDER.md) for the free-preview configuration, actual failed creation attempt, and custom-subdomain plan. Do not enable the file-based email outbox on an ephemeral service.
+
 # Activation — code vs. a working hosted service
 
 The code supports live services; **no service is silently marked live because its configuration fields exist**. Successful server reads are required before the app shows an Airtable-connected banner. This package contains no credentials or personal data.

@@ -1,6 +1,7 @@
 /** Static PWA plus authenticated live API. One process / one replica deployment. */
 import http from 'node:http';
 import {createApi} from './server/api.mjs';
+import {runtimeAddress} from './server/config.mjs';
 import {readFile, realpath} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
 import path from 'node:path';
@@ -11,6 +12,12 @@ export function createServer(options={}){const api=createApi(options);const serv
   res.setHeader('Content-Security-Policy',"default-src 'self'; script-src 'self' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://accounts.google.com/gsi/style; img-src 'self' data: blob: https://*.airtableusercontent.com; frame-src https://accounts.google.com/gsi/; connect-src 'self' https://accounts.google.com/gsi/; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'");
   try{
     const url=new URL(req.url,'http://localhost');
+    // Liveness only: does not assert that Google/Airtable/mail are configured or reachable.
+    if(url.pathname==='/healthz'){
+      if(!['GET','HEAD'].includes(req.method)){res.writeHead(405,{'Allow':'GET, HEAD'});res.end();return;}
+      res.writeHead(200,{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'});
+      res.end(req.method==='HEAD'?undefined:JSON.stringify({status:'ok'}));return;
+    }
     if(await api.handle(req,res,url))return;
     if(!['GET','HEAD'].includes(req.method)){res.writeHead(405,{'Allow':'GET, HEAD'});res.end('Method not allowed');return;}
     let name=decodeURIComponent(url.pathname);if(name==='/'||name==='')name='/index.html';
@@ -24,7 +31,6 @@ export function createServer(options={}){const api=createApi(options);const serv
   server.requestTimeout=30000;server.headersTimeout=10000;return server;
 }
 if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url)){
-  const port=Number(process.env.PORT??3000),host=process.env.HOST??'127.0.0.1';
-  if(!Number.isInteger(port)||port<1||port>65535)throw new Error('Invalid PORT');
+  const {port,host}=runtimeAddress();
   createServer().listen(port,host,()=>console.log(`Casa HQ: http://${host}:${port}`));
 }

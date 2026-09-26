@@ -1,3 +1,7 @@
+# Latest: Render preparation
+
+See [RENDER.md](RENDER.md) for the current deployment attempt, configuration, and **63 passing Node tests**. The historical section below documents the preceding build. No remote push or live deployment is claimed.
+
 # Implementation status — 2026-09-24, live-integration build
 
 ## Actual connected changes
