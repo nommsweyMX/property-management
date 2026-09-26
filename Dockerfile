@@ -1,9 +1,8 @@
 FROM node:22-bookworm-slim
 WORKDIR /app
-COPY package.json ./
-# A lockfile could not be generated in the offline build environment.
-# On first connected build, generate/review a lockfile and switch this to npm ci.
-RUN npm install --omit=dev --ignore-scripts
+COPY package.json package-lock.json ./
+# Reviewed lockfile: reproducible install, no third-party lifecycle scripts.
+RUN npm ci --omit=dev --ignore-scripts --no-audit --no-fund
 COPY public ./public
 COPY server ./server
 COPY scripts ./scripts
